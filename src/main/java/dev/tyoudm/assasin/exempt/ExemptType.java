@@ -1,11 +1,7 @@
-package dev.tyoudm.assasin.exempt;
-
+﻿package dev.tyoudm.assasin.exempt;
 public enum ExemptType {
-    TELEPORT_PENDING, SETBACK, LAG_SPIKE, 
-    ELYTRA_ACTIVE, RIPTIDE, VEHICLE, LIQUID,
-    SLIME_BLOCK, ICE, JOINED,
-    WIND_CHARGE, 
-    SPEAR_LUNGE,    // <--- Nuevo: Impulso del encantamiento Lunge
-    NAUTILUS_DASH,  // <--- Nuevo: Dash del Nautilus
-    MACE_SMASH;
+    TELEPORT_PENDING, SETBACK, LAG_SPIKE, RESPAWN, WORLD_CHANGE,
+    ELYTRA_ACTIVE, ELYTRA_BOOST, RIPTIDE, VEHICLE, LIQUID,
+    CLIMBABLE, SLIME_BLOCK, ICE, JOINED, WIND_CHARGE,
+    SPEAR_LUNGE, NAUTILUS_DASH, CINEMATIC_CAMERA;
 }
