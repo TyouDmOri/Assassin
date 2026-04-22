@@ -1,0 +1,36 @@
+# ─── ASSASIN AntiCheat v1.0.0 ────────────────────────────────────────────────
+# Author: TyouDm
+# Latency subsystem configuration.
+# See CONFIG.md for full documentation.
+
+# ─── Ping compensation ────────────────────────────────────────────────────────
+ping-compensation:
+  # Maximum ping (ms) for which compensation is applied.
+  # Above this threshold, latency-sensitive checks are suppressed via HIGH_PING exempt.
+  max-compensated-ping-ms: 300
+
+  # Reach compensation: additional blocks added to reach threshold per 100ms ping.
+  reach-per-100ms: 0.05
+
+  # Velocity window: additional ticks added to KB response window per 50ms ping.
+  velocity-ticks-per-50ms: 1
+
+# ─── Transaction ──────────────────────────────────────────────────────────────
+transaction:
+  # How often (ticks) to send a transaction packet for RTT measurement.
+  # Lower = more accurate ping, higher = less overhead.
+  interval-ticks: 20
+
+  # Maximum ticks a setback barrier can remain open before force-closing.
+  max-barrier-ticks: 40
+
+# ─── Lag compensation ─────────────────────────────────────────────────────────
+lag-compensation:
+  # Number of ticks of position history to retain for target rewind (ReachB).
+  history-ticks: 40
+
+  # TPS threshold below which a lag spike is detected.
+  lag-spike-tps: 18.0
+
+  # Ticks to suppress checks after a lag spike recovery.
+  post-spike-suppress-ticks: 5

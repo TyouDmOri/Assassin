@@ -1,0 +1,52 @@
+# ─── Build output ───────────────────────────────────────────────────────────
+build/
+out/
+target/
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+
+# ─── Gradle ─────────────────────────────────────────────────────────────────
+.gradle/
+gradle-app.setting
+!gradle-wrapper.jar
+!gradle-wrapper.properties
+
+# ─── IDE ─────────────────────────────────────────────────────────────────────
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+*.code-workspace
+*.classpath
+*.project
+.settings/
+.factorypath
+
+# ─── OS ──────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ─── Java ────────────────────────────────────────────────────────────────────
+*.class
+*.log
+hs_err_pid*
+
+# ─── Paper / Minecraft server (local test server) ────────────────────────────
+run/
+server/
+test-server/
+plugins/ASSASIN/
+*.db
+*.sqlite
+
+# ─── Secrets / credentials ───────────────────────────────────────────────────
+.env
+*.env
+secrets.yml
+credentials.yml
+
+# ─── JMH benchmarks output ───────────────────────────────────────────────────
+jmh-result*.json
+jmh-result*.csv

@@ -1,0 +1,94 @@
+# ─── ASSASIN AntiCheat v1.0.0 ────────────────────────────────────────────────
+# Author: TyouDm
+# GUI layout and material configuration.
+# See CONFIG.md and gui.md for full documentation.
+
+# ─── Border ───────────────────────────────────────────────────────────────────
+border:
+  material: "RED_STAINED_GLASS_PANE"
+  name: " "   # Single space — invisible name
+
+# ─── Main GUI ─────────────────────────────────────────────────────────────────
+main-gui:
+  title: "⚔ ASSASIN — Panel Principal"
+  rows: 6
+  slots:
+    kill-aura: 10
+    movement: 11
+    aim: 12
+    scaffold: 13
+    combat: 14
+    alerts: 20
+    stats: 21
+    flags: 22
+    about: 23
+    check-manager: 29   # Admin only
+    bulk-actions: 30    # Admin only
+    alert-format: 31    # Admin only
+
+# ─── Category GUI ─────────────────────────────────────────────────────────────
+category-gui:
+  title-prefix: "⚔ ASSASIN — "
+  rows: 4
+  back-slot: 28
+  reset-vl-slot: 34
+  check-slots: [10,11,12,13,14,15,16,19,20,21,22,23,24,25]
+  material-enabled: "LIME_DYE"
+  material-disabled: "GRAY_DYE"
+
+# ─── Alerts Toggle GUI ────────────────────────────────────────────────────────
+alerts-toggle-gui:
+  title: "🔔 ASSASIN — Configure Alerts"
+  rows: 3
+  back-slot: 19
+  slots:
+    chat: 10
+    action-bar: 11
+    title: 12
+    sound: 13
+    discord: 14
+
+# ─── Check Manager GUI ────────────────────────────────────────────────────────
+check-manager-gui:
+  title-prefix: "⚙ ASSASIN — Check Manager"
+  rows: 6
+  checks-per-page: 28
+  prev-slot: 46
+  next-slot: 52
+  reset-all-slot: 53
+  material-enabled: "LIME_STAINED_GLASS_PANE"
+  material-disabled: "RED_STAINED_GLASS_PANE"
+
+# ─── Server Stats GUI ─────────────────────────────────────────────────────────
+server-stats-gui:
+  title: "📊 ASSASIN — Server Stats"
+  rows: 4
+  back-slot: 28
+  refresh-slot: 34
+
+# ─── About GUI ────────────────────────────────────────────────────────────────
+about-gui:
+  title: "⭐ ASSASIN — About"
+  rows: 3
+  star-slot: 13
+  back-slot: 19
+
+# ─── Recent Flags GUI ─────────────────────────────────────────────────────────
+recent-flags-gui:
+  title: "📋 ASSASIN — Flags Recientes"
+  rows: 5
+  back-slot: 37
+  clear-slot: 43
+  flags-per-page: 21
+
+# ─── Bulk Actions GUI ─────────────────────────────────────────────────────────
+bulk-actions-gui:
+  title: "⚙ ASSASIN — Bulk Actions"
+  rows: 3
+  back-slot: 19
+  slots:
+    enable-all: 10
+    disable-all: 11
+    reset-vls: 13
+    save-config: 15
+    reload-config: 16

@@ -1,0 +1,139 @@
+# ─── ASSASIN AntiCheat v1.0.0 ────────────────────────────────────────────────
+# Author: TyouDm
+# Mitigation profiles and VL cascade definitions.
+# See CONFIG.md for full documentation.
+
+# ─── Profiles ─────────────────────────────────────────────────────────────────
+# Each profile maps VL thresholds to mitigation strategies.
+# Strategies: SETBACK_SOFT, SETBACK_HARD, CANCEL_PACKET, CANCEL_DAMAGE,
+#             CANCEL_BLOCK, VELOCITY_ZERO, SLOW, DISMOUNT, FREEZE, RESYNC, KICK
+#
+# Format:
+#   profiles:
+#     <profile-name>:
+#       cascades:
+#         <vl-threshold>: [STRATEGY, STRATEGY, ...]
+
+profiles:
+  soft:
+    cascades:
+      1.0: [SETBACK_SOFT]
+      5.0: [SLOW]
+      10.0: [SETBACK_HARD]
+
+  medium:
+    cascades:
+      1.0: [CANCEL_PACKET, SETBACK_SOFT]
+      8.0: [FREEZE]
+      15.0: [KICK]
+
+  hard:
+    cascades:
+      1.0: [CANCEL_PACKET, SETBACK_HARD]
+      5.0: [FREEZE]
+      10.0: [KICK]
+
+  combat:
+    cascades:
+      1.0: [CANCEL_DAMAGE]
+      10.0: [FREEZE]
+      20.0: [KICK]
+
+  world:
+    cascades:
+      1.0: [CANCEL_BLOCK]
+      10.0: [KICK]
+
+  mount:
+    cascades:
+      1.0: [DISMOUNT]
+      5.0: [SETBACK_SOFT]
+      10.0: [KICK]
+
+  velocity:
+    cascades:
+      1.0: [VELOCITY_ZERO]
+      5.0: [SETBACK_SOFT]
+      15.0: [KICK]
+
+  # Macro: conservative — don't reveal detection to the cheater
+  macro:
+    cascades:
+      # VL 0-4: NO_ACTION (log only — handled by check, not engine)
+      # VL 5-9: SILENT_ALERT (staff only — handled by AlertManager)
+      10.0: [CANCEL_PACKET]
+      15.0: [CANCEL_PACKET, RESYNC]
+      20.0: [KICK]
+
+  badpackets:
+    cascades:
+      1.0: [CANCEL_PACKET]
+      3.0: [KICK]
+
+# ─── Check → profile mapping ──────────────────────────────────────────────────
+# Maps check names to their mitigation profile.
+# Checks not listed here use the "medium" profile by default.
+check-profiles:
+  SpeedA: medium
+  SpeedB: medium
+  FlyA: hard
+  FlyB: hard
+  NoFallA: medium
+  JesusA: medium
+  StepA: medium
+  TimerA: medium
+  PhaseA: hard
+  StrafeA: soft
+  ElytraA: medium
+  JumpResetA: soft
+  JumpResetB: soft
+  MotionA: medium
+  MountSpeedA: mount
+  NautilusA: mount
+  ZombieHorseA: mount
+  MountFlyA: mount
+  KillauraA: combat
+  KillauraB: combat
+  KillauraC: combat
+  KillauraD: combat
+  AimA: combat
+  AimB: combat
+  AimC: combat
+  ReachA: combat
+  ReachB: combat
+  HitboxA: combat
+  AutoClickerA: combat
+  AutoClickerB: combat
+  AutoClickerC: combat
+  VelocityA: velocity
+  VelocityB: velocity
+  VelocityC: velocity
+  CriticalsA: combat
+  SpearA: combat
+  MaceDmgA: combat
+  MaceDmgB: combat
+  MaceDmgC: combat
+  ScaffoldA: world
+  ScaffoldB: world
+  ScaffoldC: world
+  TowerA: world
+  NukerA: world
+  FastBreakA: world
+  FastPlaceA: world
+  LiquidWalkA: world
+  AirPlaceA: world
+  BadPacketsA: badpackets
+  BadPacketsB: badpackets
+  BadPacketsC: badpackets
+  BadPacketsD: badpackets
+  BadPacketsE: badpackets
+  BadPacketsF: badpackets
+  CrashA: badpackets
+  BookA: badpackets
+  MacroSequenceA: macro
+  MacroTimingA: macro
+  MacroVarianceA: macro
+  MacroInputA: macro
+  MacroInventoryA: macro
+  MacroClickerA: macro
+  MacroCorrelationA: macro

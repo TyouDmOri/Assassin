@@ -1,0 +1,60 @@
+# ─── ASSASIN AntiCheat v1.0.0 ────────────────────────────────────────────────
+# Author: TyouDm
+# Alert system configuration.
+# See CONFIG.md for full documentation.
+
+# ─── Format ───────────────────────────────────────────────────────────────────
+format:
+  # Chat alert format. Placeholders: {player} {check} {vl} {maxvl} {ping}
+  # {tps} {world} {x} {y} {z} {time} {details}
+  chat: "{player} failed {check} (VL: {vl}/{maxvl}) | ping:{ping}ms"
+
+  # Action bar format (compact).
+  action-bar: "{player} » {check} VL:{vl}"
+
+  # Title format.
+  title: "{player} » {check}"
+  subtitle: "VL: {vl} | ping: {ping}ms"
+
+# ─── Discord webhook ──────────────────────────────────────────────────────────
+discord:
+  # Discord webhook URL. Leave empty to disable Discord alerts.
+  # Example: https://discord.com/api/webhooks/123456789/abcdefgh
+  webhook: ""
+
+  # Embed color per severity (hex integer).
+  # These are overridden by AlertFormatter.discordColor() at runtime.
+  color-low: 16753920      # 0xFFA500 — amber
+  color-medium: 16729344   # 0xFF4500 — orange-red
+  color-high: 16711680     # 0xFF0000 — red
+  color-critical: 9044227  # 0x8A0303 — deep blood red
+
+  # Send alerts only for checks with VL >= this threshold.
+  min-vl-for-discord: 5.0
+
+# ─── Sounds ───────────────────────────────────────────────────────────────────
+sounds:
+  # Sound played when a staff member receives an alert.
+  alert: "UI_BUTTON_CLICK"
+  alert-volume: 0.5
+  alert-pitch: 1.0
+
+  # Sound for toggle ON in GUI.
+  toggle-on: "BLOCK_NOTE_BLOCK_PLING"
+  toggle-on-volume: 0.7
+  toggle-on-pitch: 1.2
+
+  # Sound for toggle OFF in GUI.
+  toggle-off: "BLOCK_NOTE_BLOCK_BASS"
+  toggle-off-volume: 0.7
+  toggle-off-pitch: 0.8
+
+# ─── Channels ─────────────────────────────────────────────────────────────────
+# Default channels enabled for new staff members.
+# Individual preferences are stored in the database and override these defaults.
+default-channels:
+  chat: true
+  action-bar: true
+  title: false
+  sound: true
+  discord: false

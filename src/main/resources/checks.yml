@@ -1,0 +1,415 @@
+# ─── ASSASIN AntiCheat v1.0.0 ────────────────────────────────────────────────
+# Author: TyouDm
+# Per-check enable/disable and threshold configuration.
+# See CONFIG.md for full documentation.
+#
+# Structure:
+#   checks:
+#     <CheckName>:
+#       enabled: true|false
+#       max-vl: <double>       # VL cap before mitigation escalates
+#       decay-rate: <double>   # VL decay per tick (overrides global)
+#       # check-specific thresholds below
+
+checks:
+  # ─── Movement ───────────────────────────────────────────────────────────────
+  SpeedA:
+    enabled: true
+    max-vl: 10.0
+    # No additional thresholds — uses MovementPredictor.maxExpectedSpeedH()
+
+  SpeedB:
+    enabled: true
+    max-vl: 10.0
+
+  FlyA:
+    enabled: true
+    max-vl: 10.0
+    tolerance: 0.03           # Allowed Y deviation above expected gravity
+
+  FlyB:
+    enabled: true
+    max-vl: 8.0
+    min-air-ticks: 10         # Ticks airborne before hover check activates
+    hover-threshold: 0.03     # |motionY| below this = hovering
+
+  NoFallA:
+    enabled: true
+    max-vl: 8.0
+    min-fall-distance: 3.0    # Minimum fall distance (blocks) to check
+
+  JesusA:
+    enabled: true
+    max-vl: 8.0
+
+  StepA:
+    enabled: true
+    max-vl: 8.0
+    max-step: 0.65            # Maximum allowed upward Y delta without jump
+
+  TimerA:
+    enabled: true
+    max-vl: 10.0
+    max-packets-per-second: 22  # Vanilla = 20, +2 tolerance
+
+  PhaseA:
+    enabled: true
+    max-vl: 8.0
+    min-overlap-ticks: 3      # Consecutive overlap ticks before flagging
+
+  StrafeA:
+    enabled: true
+    max-vl: 8.0
+    max-deviation: 105.0      # Max angle (degrees) between movement and yaw
+
+  ElytraA:
+    enabled: true
+    max-vl: 8.0
+    deviation-threshold: 0.5  # blocks/tick deviation to be suspicious
+    flag-ticks: 12            # Consecutive suspicious ticks before flagging
+
+  JumpResetA:
+    enabled: true
+    max-vl: 8.0
+    min-samples: 8
+    sigma-threshold: 1.5      # σ below this = suspicious
+    success-rate-limit: 0.95  # Success rate above this = suspicious
+
+  JumpResetB:
+    enabled: true
+    max-vl: 8.0
+    jump-vel-tolerance: 0.05
+
+  MotionA:
+    enabled: true
+    max-vl: 8.0
+    max-delta-h: 0.5
+    max-delta-y: 0.5
+
+  # ─── Mount ──────────────────────────────────────────────────────────────────
+  MountSpeedA:
+    enabled: true
+    max-vl: 10.0
+    mount-grace-ticks: 5
+    min-over-ticks: 3
+
+  NautilusA:
+    enabled: true
+    max-vl: 8.0
+
+  ZombieHorseA:
+    enabled: true
+    max-vl: 10.0
+    max-air-ticks: 10
+
+  MountFlyA:
+    enabled: true
+    max-vl: 10.0
+    max-air-ticks: 12
+
+  # ─── Combat ─────────────────────────────────────────────────────────────────
+  KillauraA:
+    enabled: true
+    max-vl: 10.0
+    min-rotation-delta: 0.5
+    min-consecutive: 3
+
+  KillauraB:
+    enabled: true
+    max-vl: 10.0
+
+  KillauraC:
+    enabled: true
+    max-vl: 10.0
+    max-reach: 6.5
+
+  KillauraD:
+    enabled: true
+    max-vl: 10.0
+    max-angle: 90.0
+
+  AimA:
+    enabled: true
+    max-vl: 8.0
+    buffer-size: 40
+    gcd-threshold: 5
+
+  AimB:
+    enabled: true
+    max-vl: 8.0
+    min-samples: 20
+    max-ratio-variance: 0.01
+
+  AimC:
+    enabled: true
+    max-vl: 8.0
+    min-samples: 20
+    min-pitch-variance: 0.005
+
+  ReachA:
+    enabled: true
+    max-vl: 10.0
+    base-reach: 3.0
+
+  ReachB:
+    enabled: true
+    max-vl: 10.0
+
+  HitboxA:
+    enabled: true
+    max-vl: 8.0
+    expansion-tolerance: 0.1
+
+  AutoClickerA:
+    enabled: true
+    max-vl: 10.0
+    min-samples: 20
+    min-sigma-ms: 2.0
+    max-cps: 20.0
+
+  AutoClickerB:
+    enabled: true
+    max-vl: 8.0
+    min-interval-ms: 10
+    min-consecutive: 3
+
+  AutoClickerC:
+    enabled: true
+    max-vl: 10.0
+    sigma-trigger: 5.0
+    min-kurtosis: 1.0
+    peak-ratio: 3.0
+
+  VelocityA:
+    enabled: true
+    max-vl: 10.0
+    min-ratio: 0.5
+
+  VelocityB:
+    enabled: true
+    max-vl: 10.0
+    min-ratio: 0.4
+
+  VelocityC:
+    enabled: true
+    max-vl: 8.0
+
+  CriticalsA:
+    enabled: true
+    max-vl: 8.0
+
+  SpearA:
+    enabled: true
+    max-vl: 8.0
+    min-cooldown: 0.85
+
+  MaceDmgA:
+    enabled: true
+    max-vl: 8.0
+
+  MaceDmgB:
+    enabled: true
+    max-vl: 8.0
+    min-air-ticks: 5
+
+  MaceDmgC:
+    enabled: true
+    max-vl: 8.0
+    min-cooldown: 0.9
+
+  AttributeSwapA:
+    enabled: true
+    max-vl: 1.0             # Informer only — never actually flags
+
+  # ─── World ──────────────────────────────────────────────────────────────────
+  ScaffoldA:
+    enabled: true
+    max-vl: 10.0
+
+  ScaffoldB:
+    enabled: true
+    max-vl: 10.0
+    min-pitch-sigma: 0.1
+
+  ScaffoldC:
+    enabled: true
+    max-vl: 8.0
+    max-face-angle: 135.0
+
+  TowerA:
+    enabled: true
+    max-vl: 8.0
+    min-samples: 8
+    min-sigma-ticks: 1.5
+
+  NukerA:
+    enabled: true
+    max-vl: 10.0
+
+  FastBreakA:
+    enabled: true
+    max-vl: 10.0
+    tolerance-ticks: 2
+
+  FastPlaceA:
+    enabled: true
+    max-vl: 8.0
+    min-place-interval-ticks: 4
+
+  LiquidWalkA:
+    enabled: true
+    max-vl: 8.0
+
+  AirPlaceA:
+    enabled: true
+    max-vl: 8.0
+
+  # ─── Player ─────────────────────────────────────────────────────────────────
+  InventoryA:
+    enabled: true
+    max-vl: 8.0
+    min-open-ticks: 3
+    min-speed-h: 0.05
+
+  InventoryB:
+    enabled: true
+    max-vl: 8.0
+
+  BadPacketsA:
+    enabled: true
+    max-vl: 3.0
+
+  BadPacketsB:
+    enabled: true
+    max-vl: 3.0
+
+  BadPacketsC:
+    enabled: true
+    max-vl: 3.0
+    max-y-extreme: 1.0E7
+
+  BadPacketsD:
+    enabled: true
+    max-vl: 3.0
+
+  BadPacketsE:
+    enabled: true
+    max-vl: 3.0
+
+  BadPacketsF:
+    enabled: true
+    max-vl: 3.0
+
+  PostA:
+    enabled: true
+    max-vl: 5.0
+
+  CrashA:
+    enabled: true
+    max-vl: 3.0
+    max-delta: 100.0
+
+  BookA:
+    enabled: true
+    max-vl: 3.0
+    max-payload-bytes: 8192   # 8 KB
+
+  TimerPacketA:
+    enabled: true
+    max-vl: 10.0
+    max-packets-per-second: 500
+
+  AutoTotemA:
+    enabled: true
+    max-vl: 8.0
+    min-reswap-ms: 250
+
+  AutoTotemB:
+    enabled: true
+    max-vl: 8.0
+    min-samples: 5
+    sigma-threshold: 1.5
+
+  AutoTotemC:
+    enabled: true
+    max-vl: 8.0
+
+  AutoTotemD:
+    enabled: true
+    max-vl: 8.0
+    min-simultaneous-actions: 3
+
+  ChestStealerA:
+    enabled: true
+    max-vl: 8.0
+    max-clicks-per-second: 20
+
+  AutoArmorA:
+    enabled: true
+    max-vl: 8.0
+    min-equip-interval-ticks: 2
+
+  FastEatA:
+    enabled: true
+    max-vl: 8.0
+    vanilla-eat-ticks: 32
+    tolerance-ticks: 5
+
+  # ─── Macro ──────────────────────────────────────────────────────────────────
+  MacroSequenceA:
+    enabled: true
+    max-vl: 20.0
+    max-repeat-count: 5
+    min-actions: 20
+
+  MacroTimingA:
+    enabled: true
+    max-vl: 20.0
+    min-reaction-ms: 150
+    min-consecutive: 5
+
+  MacroVarianceA:
+    enabled: true
+    max-vl: 20.0
+    min-sigma-ms: 1.5
+    min-samples: 20
+
+  MacroInputA:
+    enabled: true
+    max-vl: 20.0
+    min-actions-per-tick: 4
+    max-occurrences-per-minute: 3
+
+  MacroInventoryA:
+    enabled: true
+    max-vl: 20.0
+    min-switch-use-ms: 150
+
+  MacroClickerA:
+    enabled: true
+    max-vl: 20.0
+    sigma-trigger: 5.0
+    min-kurtosis: 0.5
+    peak-ratio: 4.0
+
+  MacroCorrelationA:
+    enabled: true
+    max-vl: 20.0
+    min-r-squared: 0.95
+    min-pairs: 8
+
+  # ─── Misc ───────────────────────────────────────────────────────────────────
+  NameSpoofA:
+    enabled: true
+    max-vl: 3.0
+
+  ClientBrandA:
+    enabled: true
+    max-vl: 3.0
+    max-brand-length: 64
+
+  GhostHandA:
+    enabled: true
+    max-vl: 8.0
+    arm-swing-window-ticks: 3
+    min-consecutive: 3

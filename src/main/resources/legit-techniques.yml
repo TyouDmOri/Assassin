@@ -1,0 +1,94 @@
+# ─── ASSASIN AntiCheat v1.0.0 ────────────────────────────────────────────────
+# Author: TyouDm
+# Legit PvP technique tolerances.
+# These values prevent false-flags for legitimate player techniques.
+# See CONFIG.md for full documentation.
+
+# ─── Format ───────────────────────────────────────────────────────────────────
+# Each technique has:
+#   exempt-ticks:       ticks to suppress related checks after detection
+#   min-samples:        minimum sample count before flagging
+#   sigma-threshold:    minimum σ (std dev) to consider legit (0 = disabled)
+#   success-rate-limit: maximum success rate before flagging (1.0 = disabled)
+#   kb-multiplier:      knockback multiplier when technique is active (1.0 = normal)
+
+techniques:
+  # W-tap: sprint off→on ≤3t around ATTACK. Exempt VelocityA 5t.
+  WTAP:
+    exempt-ticks: 5
+    kb-multiplier: 1.0
+
+  # S-tap: backward input ≤2t + re-sprint.
+  STAP:
+    exempt-ticks: 3
+
+  # A/D-tap: lateral oscillation with stable yaw.
+  ADTAP:
+    exempt-ticks: 2
+
+  # Jump-reset legit: σ≥1.5, success rate <95% in n≥8.
+  JUMP_RESET:
+    exempt-ticks: 0
+    min-samples: 8
+    sigma-threshold: 1.5
+    success-rate-limit: 0.95
+
+  # Block-hit: expected KB * 0.5 while shield USE_ITEM active.
+  BLOCK_HIT:
+    exempt-ticks: 0
+    kb-multiplier: 0.5
+
+  # Crit-tapping: onGround=false + motionY<0 required.
+  CRIT_TAPPING:
+    exempt-ticks: 0
+
+  # Butterfly / Jitter / Drag click: bimodal distribution, high kurtosis.
+  BUTTERFLY_CLICK:
+    exempt-ticks: 0
+    min-samples: 20
+
+  JITTER_CLICK:
+    exempt-ticks: 0
+    min-samples: 20
+
+  DRAG_CLICK:
+    exempt-ticks: 0
+    min-samples: 20
+
+  # Attribute-swap: re-baseline VelocityA, MaceDmgA, AutoClickerA.
+  ATTRIBUTE_SWAP:
+    exempt-ticks: 3
+
+  # Elytra dive: ElytraA only flags persistent deviation ≥12t.
+  ELYTRA_DIVE:
+    exempt-ticks: 12
+
+  # Riptide: exempt SpeedA/B, FlyA for 20t.
+  RIPTIDE:
+    exempt-ticks: 20
+
+  # Godbridge: pitch ~80° fixed, ScaffoldB requires σ>0.1° jitter.
+  GODBRIDGE:
+    exempt-ticks: 0
+    sigma-threshold: 0.1
+
+  # Speed-bridge / Ninja-bridge: raytrace valid, no rotation isolation.
+  SPEED_BRIDGE:
+    exempt-ticks: 0
+
+  NINJA_BRIDGE:
+    exempt-ticks: 0
+
+  # Pearl phase: exempt PhaseA for 60t (3s).
+  PEARL_PHASE:
+    exempt-ticks: 60
+
+  # Totem-swap legit: reswap ≥5t, σ>1.5, no multitasking.
+  TOTEM_SWAP:
+    exempt-ticks: 0
+    min-samples: 5
+    sigma-threshold: 1.5
+
+  # Combo-reset: multi-target with rotation pre-hit.
+  COMBO_RESET:
+    exempt-ticks: 0

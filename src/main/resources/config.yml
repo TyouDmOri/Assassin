@@ -1,0 +1,49 @@
+# ─── ASSASIN AntiCheat v1.0.0 ────────────────────────────────────────────────
+# Author: TyouDm
+# General configuration — see CONFIG.md for full documentation.
+
+# ─── General ──────────────────────────────────────────────────────────────────
+general:
+  # Plugin display name used in messages and GUI titles.
+  name: "ASSASIN"
+
+  # Log level: INFO, WARNING, SEVERE
+  log-level: "INFO"
+
+  # Enable verbose debug logging (performance impact — use only for testing).
+  debug: true
+
+# ─── Storage ──────────────────────────────────────────────────────────────────
+storage:
+  # Backend type: sqlite | mysql | mariadb
+  # Default: sqlite (zero-config, stores data in plugins/ASSASIN/data/assasin.db)
+  type: "sqlite"
+
+  # MySQL / MariaDB connection settings (ignored when type=sqlite)
+  host: "localhost"
+  port: 3306
+  database: "assasin"
+  username: "root"
+  password: ""
+
+  # HikariCP pool settings
+  pool:
+    max-pool-size: 10       # Maximum number of connections in the pool
+    min-idle: 2             # Minimum idle connections
+    connection-timeout: 5000    # ms — max time to wait for a connection
+    max-lifetime: 1800000       # ms — max connection lifetime (30 min)
+    leak-detection-threshold: 30000  # ms — log if connection held > 30s
+
+# ─── Threads ──────────────────────────────────────────────────────────────────
+threads:
+  # AsyncProcessor parallelism (0 = auto: max(2, availableProcessors - 1))
+  async-parallelism: 0
+
+# ─── Flags ────────────────────────────────────────────────────────────────────
+flags:
+  # Global VL decay rate per tick (applied to all checks unless overridden).
+  global-decay-rate: 0.05
+
+  # Maximum VL before a player is considered "maxed out" on a check.
+  # Individual checks can override this in checks.yml.
+  default-max-vl: 10.0

@@ -1,0 +1,46 @@
+# ─── ASSASIN AntiCheat v1.0.0 ────────────────────────────────────────────────
+# Author: TyouDm
+# Paper Plugin Manifest — https://docs.papermc.io/paper/reference/paper-plugins
+
+name: ASSASIN
+version: "${version}"
+main: dev.tyoudm.assasin.AssasinPlugin
+description: "Mitigation-First Server-Side AntiCheat for Paper 1.21.11"
+authors:
+  - TyouDm
+website: ""
+api-version: "1.21"
+
+# ─── Bootstrap ────────────────────────────────────────────────────────────────
+bootstrapper: dev.tyoudm.assasin.AssasinBootstrap
+
+# ─── Loader ───────────────────────────────────────────────────────────────────
+loader: dev.tyoudm.assasin.AssasinLoader
+
+# ─── Dependencies ─────────────────────────────────────────────────────────────
+dependencies:
+  server:
+    packetevents:
+      load: BEFORE
+      required: true
+      join-classpath: true
+
+# ─── Permissions ──────────────────────────────────────────────────────────────
+# All permissions default to false — OPs do NOT get bypass automatically.
+# Grant permissions explicitly via a permissions plugin (LuckPerms, etc.)
+permissions:
+  assasin.bypass:
+    description: "Bypass all ASSASIN checks"
+    default: false
+  assasin.alerts:
+    description: "Receive alert notifications"
+    default: op
+  assasin.admin:
+    description: "Access admin GUI sections"
+    default: op
+  assasin.command:
+    description: "Access /assasin command"
+    default: op
+  assasin.command.*:
+    description: "Access all /assasin subcommands"
+    default: op

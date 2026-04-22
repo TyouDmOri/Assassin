@@ -1,0 +1,65 @@
+# ─── ASSASIN AntiCheat v1.0.0 ────────────────────────────────────────────────
+# Author: TyouDm
+# All user-facing messages (i18n-ready).
+# Supports MiniMessage format: <red>, <bold>, <color:#8B0000>, etc.
+# See CONFIG.md for full documentation.
+
+# ─── Prefix ───────────────────────────────────────────────────────────────────
+prefix: "<color:#8B0000><bold>[ASSASIN]</bold></color> "
+
+# ─── General ──────────────────────────────────────────────────────────────────
+general:
+  no-permission: "<color:#FF3333>✖ No permission.</color>"
+  player-only: "<color:#AAAAAA>This command is player-only.</color>"
+  player-not-found: "<color:#AAAAAA>Player '<white>{player}</white>' not found.</color>"
+  no-data: "<color:#AAAAAA>No data found for <white>{player}</white>.</color>"
+  reloaded: "<color:#228B22>Reloaded: {target}.</color>"
+  saved: "<color:#228B22>Configuration saved.</color>"
+
+# ─── Alerts ───────────────────────────────────────────────────────────────────
+alerts:
+  enabled: "<color:#228B22>Alerts enabled.</color>"
+  disabled: "<color:#FF3333>Alerts disabled.</color>"
+  channel-on: "<color:#228B22>{channel} alerts enabled.</color>"
+  channel-off: "<color:#FF3333>{channel} alerts disabled.</color>"
+
+# ─── Exempt ───────────────────────────────────────────────────────────────────
+exempt:
+  added: "<color:#228B22>{player} exempted from {type} for {seconds}s.</color>"
+  invalid-type: "<color:#FF3333>Unknown exempt type: {type}.</color>"
+
+# ─── VL ───────────────────────────────────────────────────────────────────────
+vl:
+  reset: "<color:#228B22>VL reset for {player}{check}.</color>"
+  reset-all: "<color:#228B22>All VLs reset for {player}.</color>"
+
+# ─── Check ────────────────────────────────────────────────────────────────────
+check:
+  enabled: "<color:#228B22>Check '{check}' enabled.</color>"
+  disabled: "<color:#FF3333>Check '{check}' disabled.</color>"
+  not-found: "<color:#FF3333>Check '{check}' not found.</color>"
+
+# ─── Debug ────────────────────────────────────────────────────────────────────
+debug:
+  enabled: "<color:#228B22>Debug enabled for {player}.</color>"
+  disabled: "<color:#FF3333>Debug disabled for {player}.</color>"
+
+# ─── Kick / Ban ───────────────────────────────────────────────────────────────
+kick:
+  success: "<color:#228B22>Kicked {player}: {reason}</color>"
+  default-reason: "You have been disconnected from the server."
+
+ban:
+  success: "<color:#228B22>Banned {player}: {reason}</color>"
+  default-reason: "Banned by ASSASIN AntiCheat."
+
+# ─── Version ──────────────────────────────────────────────────────────────────
+version:
+  line1: "ASSASIN <color:#DC143C><bold>v{version}</bold></color> by <color:#DC143C><bold>TyouDm</bold></color>"
+  line2: "  Target: <white>Paper 1.21.11 \"Mounts of Mayhem\"</white>"
+
+# ─── Mitigation messages (shown to flagged player if configured) ──────────────
+mitigation:
+  setback: ""          # Empty = silent setback (recommended)
+  kick: "You have been disconnected from the server."
+  freeze: ""           # Empty = silent freeze

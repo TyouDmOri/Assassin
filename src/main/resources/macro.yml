@@ -1,0 +1,76 @@
+# ─── ASSASIN AntiCheat v1.0.0 ────────────────────────────────────────────────
+# Author: TyouDm
+# Macro detection configuration.
+# See CONFIG.md for full documentation.
+
+# ─── Strictness ───────────────────────────────────────────────────────────────
+# Controls how aggressively macro checks flag.
+# Values: low | medium | high
+#
+#   low:    n≥50, r²>0.98 — for competitive servers with hardware gamers
+#   medium: n≥20, r²>0.95 — balanced default
+#   high:   n≥10, r²>0.90 — for casual servers
+strictness: "medium"
+
+# ─── Strictness overrides ─────────────────────────────────────────────────────
+# Fine-tune thresholds per strictness level.
+strictness-levels:
+  low:
+    min-samples: 50
+    min-r-squared: 0.98
+    min-sigma-ms: 2.0
+  medium:
+    min-samples: 20
+    min-r-squared: 0.95
+    min-sigma-ms: 1.5
+  high:
+    min-samples: 10
+    min-r-squared: 0.90
+    min-sigma-ms: 1.0
+
+# ─── Whitelist ────────────────────────────────────────────────────────────────
+# UUIDs exempt from all macro checks (streamers, tournament players, etc.).
+# Format: list of UUID strings.
+whitelist: []
+# Example:
+# whitelist:
+#   - "550e8400-e29b-41d4-a716-446655440000"
+#   - "6ba7b810-9dad-11d1-80b4-00c04fd430c8"
+
+# ─── Thresholds ───────────────────────────────────────────────────────────────
+# Per-check threshold overrides (override strictness-level defaults).
+thresholds:
+  MacroSequenceA:
+    max-repeat-count: 5       # n-gram repetitions before suspicious
+
+  MacroTimingA:
+    min-reaction-ms: 150      # Sub-human reaction threshold (ms)
+    min-consecutive: 5        # Consecutive sub-human intervals before flag
+
+  MacroVarianceA:
+    min-sigma-ms: 1.5         # σ below this = suspicious
+    min-samples: 20           # Minimum samples before checking
+
+  MacroInputA:
+    min-actions-per-tick: 4   # Actions in 1 tick = suspicious
+    max-occurrences-per-minute: 3
+
+  MacroInventoryA:
+    min-switch-use-ms: 150    # Minimum switch-to-use interval (ms)
+
+  MacroClickerA:
+    sigma-trigger: 5.0        # Preliminary σ to trigger FFT
+    min-kurtosis: 0.5         # Kurtosis below this = unimodal (macro)
+    peak-ratio: 4.0           # Dominant bin ratio above this = single peak
+
+  MacroCorrelationA:
+    min-r-squared: 0.95       # Pearson r² threshold
+    min-pairs: 8              # Minimum event-action pairs
+
+# ─── Behavior ─────────────────────────────────────────────────────────────────
+# Disable MacroTimingA for players with ping > this value (ms).
+# Network jitter can make legitimate actions appear sub-human.
+disable-timing-above-ping: 300
+
+# Pause all macro checks for this many ticks after a lag spike (TPS < 18).
+post-lag-spike-suppress-ticks: 5
