@@ -121,6 +121,8 @@ public final class PlayerData {
 
     // ─── Trackers (FASE 4) ────────────────────────────────────────────────────
 
+        // ─── Trackers (FASE 4) ────────────────────────────────────────────────────
+
     private MovementTracker   movementTracker;
     private RotationTracker   rotationTracker;
     private CombatTracker     combatTracker;
@@ -133,6 +135,11 @@ public final class PlayerData {
     private InventoryTracker  inventoryTracker;
     private ActionTracker     actionTracker;
     private MacroStateTracker macroStateTracker;
+    
+    // --- AÑADE ESTAS 3 LÍNEAS AQUÍ ---
+    private CollisionTracker  collisionTracker;
+    private AttributeTracker  attributeTracker;
+    private CheckData         checkData; 
 
 
     /** Per-player elytra physics predictor (FASE 5). */
@@ -178,6 +185,9 @@ public final class PlayerData {
         this.macroStateTracker = new MacroStateTracker();
         this.elytraPredictor   = new ElytraPredictor();
         this.replayBuffer      = new ReplayBuffer();
+        this.collisionTracker  = new CollisionTracker();
+        this.attributeTracker  = new AttributeTracker();
+        this.checkData         = new CheckData();
     }
 
     // ─── Position ─────────────────────────────────────────────────────────────
@@ -291,6 +301,9 @@ public final class PlayerData {
     public ReplayBuffer      getReplayBuffer()       { return replayBuffer; }
     public AttributeTracker getAttributeTracker() { return attributeTracker; }
     public VelocityTracker getVelocityTracker() { return velocityTracker; }
+    public CollisionTracker  getCollisionTracker()  { return collisionTracker; }
+    public AttributeTracker  getAttributeTracker()  { return attributeTracker; }
+    public CheckData         getCheckData()         { return checkData; }
     // ─── Identity ─────────────────────────────────────────────────────────────
 
     public UUID   getUuid()     { return uuid; }
