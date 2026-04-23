@@ -70,6 +70,14 @@ public class PacketProcessor extends PacketListenerAbstract {
             }
         }
 
+        // Detectar cuando el cliente confirma el teletransporte
+if (event.getPacketType() == PacketType.Play.Client.TELEPORT_CONFIRM) {
+    WrapperPlayClientTeleportConfirm confirm = new WrapperPlayClientTeleportConfirm(event);
+    data.getMovementTracker().confirmTeleport(confirm.getTeleportId());
+    
+    // Al confirmar, limpiamos cualquier exención de movimiento
+    data.getExemptManager().addExempt(ExemptType.TELEPORT_PENDING, 2); 
+}
         // 7. MANEJO DE LATENCIA (Pong)
         if (event.getPacketType() == PacketType.Play.Client.PONG) {
             data.getTrackerLatency().update(player);
@@ -89,7 +97,10 @@ public class PacketProcessor extends PacketListenerAbstract {
         if (event.getPacketType() == PacketType.Play.Server.ENTITY_VELOCITY) {
             data.getVelocityTracker().handleSend(event);
         }
-        
+        if (event.getPacketType() == PacketType.Play.Server.PLAYER_POSITION_AND_LOOK) {
+    WrapperPlayServerPlayerPositionAndLook tp = new WrapperPlayServerPlayerPositionAndLook(event);
+    data.getMovementTracker().handleTeleport(tp.getTeleportId());
+}
         // Detectar cambios en velocidad de caminata o rango de ataque (1.21.11)
         if (event.getPacketType() == PacketType.Play.Server.UPDATE_ATTRIBUTES) {
             data.getAttributeTracker().handleSend(event);

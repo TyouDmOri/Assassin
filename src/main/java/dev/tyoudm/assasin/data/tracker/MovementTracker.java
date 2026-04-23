@@ -127,6 +127,24 @@ public final class MovementTracker {
     public RingBuffer.OfDouble getSpeedY()    { return speedY; }
     public RingBuffer.OfDouble getGroundHistory() { return groundHistory; }
 
+        // Añade esto a tu MovementTracker
+    private int pendingTeleportId = -1;
+    private long lastTeleportTime;
+
+    public void handleTeleport(int id) {
+    this.pendingTeleportId = id;
+    this.lastTeleportTime = System.currentTimeMillis();
+    }
+
+    public boolean isTeleportPending() {
+        return pendingTeleportId != -1;
+    }
+
+    public void confirmTeleport(int id) {
+        if (this.pendingTeleportId == id) {
+            this.pendingTeleportId = -1;
+        }
+    }
     /** Resets all state. Call on respawn or teleport. */
     public void reset() {
         speedH.clear();

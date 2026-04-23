@@ -32,33 +32,30 @@ public final class PostA extends Check {
     public PostA(final MitigationEngine engine) { super(engine); }
 
     @Override
-    protected void process(final Player player, final PlayerData data, final long tick) {
-        // Solo procesamos si hay un TP pendiente detectado por el tracker
-        if (!isExempt(data, ExemptType.TELEPORT_PENDING, tick)) {
-            // Si no hay TP pendiente, reseteamos el buffer de este check
-            data.getCheckData().setPostABuffer(0);
-            return;
-        }
+protected void process(Player player, PlayerData data, long tick) {
+    MovementTracker movement = data.getMovementTracker();
 
-        final double speedH = data.getVelocityH();
+    if (movement.isTeleportPending()) {
+        double deltaH = movement.getDeltaH();
         
-        // 1. Aumentamos el umbral. 0.1 es demasiado sensible.
-        // 0.22 es aproximadamente la velocidad de caminar.
-        if (speedH > 0.2) {
-            
-            // 2. Implementamos un Buffer de Gracia (Packet-based)
-            // Permitimos hasta 2-3 paquetes de "vuelo" para absorber el ping.
-            int buffer = data.getCheckData().getPostABuffer();
-            buffer++;
+        // Si el movimiento es muy pequeño (jitter), lo ignoramos
+        if (deltaH < 0.01) return;
 
-            // Si el jugador envía más de 3 paquetes de movimiento sin confirmar el TP
-            if (buffer > 3) {
-                flag(player, data, 1.0,
-                    String.format("action before confirm: speedH=%.4f buffer=%d", speedH, buffer),
-                    tick);
-            }
-            
-            data.getCheckData().setPostABuffer(buffer);
+        // Si el teletransporte ocurrió hace menos de 200ms, es probable que sea lag de red
+        // Damos una exención temporal.
+        long timeSinceTeleport = System.currentTimeMillis() - movement.getLastTeleportTime();
+        if (timeSinceTeleport < 200) {
+            return; 
         }
+
+        // Si después de 200ms sigue enviando movimientos sin confirmar el TP, flagueamos.
+        double buffer = data.getCheckData().getMotionABuffer(); // Reutilizamos un buffer
+        if (deltaH > 0.1) {
+            if (++buffer > 3) {
+                flag(player, data, 1.0, "Action before TP confirm. Speed=" + deltaH, tick);
+            }
+        }
+        data.getCheckData().setMotionABuffer(buffer);
     }
+}
 }
