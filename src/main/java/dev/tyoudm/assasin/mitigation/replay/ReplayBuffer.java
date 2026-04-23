@@ -1,21 +1,16 @@
 package dev.tyoudm.assasin.mitigation.replay;
 
-import java.util.LinkedList;
-
 public final class ReplayBuffer {
-    private final LinkedList<Snapshot> snapshots = new LinkedList<>();
-    private static final int MAX_TICKS = 200; // 10 segundos de juego
+    private final Snapshot[] snapshots = new Snapshot[200];
+    private int cursor = 0;
 
     public void addSnapshot(double x, double y, double z, float yaw, float pitch, boolean onGround) {
-        if (snapshots.size() >= MAX_TICKS) {
-            snapshots.removeFirst();
-        }
-        snapshots.add(new Snapshot(x, y, z, yaw, pitch, onGround, System.currentTimeMillis()));
+        // Reutilizamos el espacio del array sin crear nuevos objetos si es posible
+        snapshots[cursor] = new Snapshot(x, y, z, yaw, pitch, onGround, System.currentTimeMillis());
+        cursor = (cursor + 1) % snapshots.length;
     }
 
-    public LinkedList<Snapshot> getSnapshots() {
-        return snapshots;
-    }
+    public Snapshot[] getSnapshots() { return snapshots; }
 
-    public static record Snapshot(double x, double y, double z, float yaw, float pitch, boolean onGround, long timestamp) {}
+    public record Snapshot(double x, double y, double z, float yaw, float pitch, boolean onGround, long timestamp) {}
 }
