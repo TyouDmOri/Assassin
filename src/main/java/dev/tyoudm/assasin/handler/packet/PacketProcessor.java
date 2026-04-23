@@ -18,17 +18,21 @@ public class PacketProcessor extends PacketListenerAbstract {
         PlayerData data = Assassin.getInstance().getDataManager().getData(player);
         if (data == null) return;
 
-        // 1. Actualizar Trackers con paquetes de entrada (Movimiento, Rotación)
+        long tick = Assassin.getInstance().getTick();
+
+        // 1. Manejo de Movimiento
         if (PacketType.Play.Client.isPosition(event.getPacketType())) {
             data.getMovementTracker().handleReceive(event);
-            // Ejecutar Checks de Movimiento después de actualizar datos
-            Assassin.getInstance().getCheckManager().runMovementChecks(player, data);
-        } 
-        
+            data.getCollisionTracker().handle(player); // Actualizar colisiones
+            data.getLatencyTracker().update(player);   // Actualizar ping
+            
+            Assassin.getInstance().getCheckManager().runMovementChecks(player, data, tick);
+        }
+
+        // 2. Manejo de Rotación y Combate
         if (PacketType.Play.Client.isLook(event.getPacketType())) {
             data.getRotationTracker().handleReceive(event);
-            // Ejecutar Checks de Combate/Rotación
-            Assassin.getInstance().getCheckManager().runCombatChecks(player, data);
+            Assassin.getInstance().getCheckManager().runCombatChecks(player, data, tick);
         }
 
         if (event.getPacketType() == PacketType.Play.Client.INTERACT_ENTITY) {
@@ -44,7 +48,6 @@ public class PacketProcessor extends PacketListenerAbstract {
         PlayerData data = Assassin.getInstance().getDataManager().getData(player);
         if (data == null) return;
 
-        // Actualizar Atributos y Velocidad (1.21.11)
         data.getAttributeTracker().handleSend(event);
         data.getVelocityTracker().handleSend(event);
     }

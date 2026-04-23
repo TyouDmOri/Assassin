@@ -48,7 +48,12 @@ public final class AssasinPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         final long start = System.currentTimeMillis();
-
+        
+        PacketEvents.getAPI().init();
+    
+        // Registrar el Listener
+        PacketEvents.getAPI().getEventManager().registerListener(new PacketProcessor());
+    
         // Bootstrap the service container — wires all subsystems in dependency order
         serviceContainer = new ServiceContainer(this);
         serviceContainer.enable();
