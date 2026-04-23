@@ -134,6 +134,7 @@ public final class PlayerData {
     private ActionTracker     actionTracker;
     private MacroStateTracker macroStateTracker;
 
+
     /** Per-player elytra physics predictor (FASE 5). */
     private ElytraPredictor   elytraPredictor;
 
@@ -288,7 +289,8 @@ public final class PlayerData {
     public MacroStateTracker getMacroStateTracker() { return macroStateTracker; }
     public ElytraPredictor   getElytraPredictor()   { return elytraPredictor; }
     public ReplayBuffer      getReplayBuffer()       { return replayBuffer; }
-
+    public AttributeTracker getAttributeTracker() { return attributeTracker; }
+    public VelocityTracker getVelocityTracker() { return velocityTracker; }
     // ─── Identity ─────────────────────────────────────────────────────────────
 
     public UUID   getUuid()     { return uuid; }
