@@ -1,29 +1,34 @@
 package dev.tyoudm.assasin.data.tracker;
 
-import com.github.retrooper.packetevents.event.PacketReceiveEvent;
-import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerFlying;
+import lombok.Getter;
 
-public class RotationTracker {
-    private float yaw, pitch, lastYaw, lastPitch;
+@Getter
+public final class RotationTracker {
+
+    private float yaw, pitch;
+    private float lastYaw, lastPitch;
     private float deltaYaw, deltaPitch;
 
-    public void handleReceive(PacketReceiveEvent event) {
-        WrapperPlayClientPlayerFlying wrapper = new WrapperPlayClientPlayerFlying(event);
-        
-        if (wrapper.hasRotationChanged()) {
-            this.lastYaw = yaw;
-            this.lastPitch = pitch;
-            
-            this.yaw = wrapper.getLocation().getYaw();
-            this.pitch = wrapper.getLocation().getPitch();
+    public void update(float yaw, float pitch) {
+        this.lastYaw = this.yaw;
+        this.lastPitch = this.pitch;
 
-            this.deltaYaw = Math.abs(yaw - lastYaw);
-            this.deltaPitch = Math.abs(pitch - lastPitch);
-        }
+        this.yaw = yaw;
+        this.pitch = pitch;
+
+        // Calcular deltas
+        this.deltaYaw = Math.abs(yaw - lastYaw);
+        this.deltaPitch = Math.abs(pitch - lastPitch);
     }
 
-    public float getYaw() { return yaw; }
-    public float getPitch() { return pitch; }
-    public float getLastYaw() { return lastYaw; }
-    public float getDeltaYaw() { return deltaYaw; }
+    /**
+     * Devuelve el Yaw normalizado entre -180 y 180 grados.
+     * Esto arregla el error de los 871.4° que veías en el log.
+     */
+    public float getNormalizedYaw() {
+        float normalized = yaw % 360.0f;
+        if (normalized > 180.0f) normalized -= 360.0f;
+        if (normalized < -180.0f) normalized += 360.0f;
+        return normalized;
+    }
 }

@@ -101,6 +101,8 @@ if (event.getPacketType() == PacketType.Play.Client.TELEPORT_CONFIRM) {
     WrapperPlayServerPlayerPositionAndLook tp = new WrapperPlayServerPlayerPositionAndLook(event);
     data.getMovementTracker().handleTeleport(tp.getTeleportId());
 }
+        data.getPositionTracker().update(packetX, packetY, packetZ, packetOnGround, player.getWorld());
+        data.getRotationTracker().update(packetYaw, packetPitch);
         // Detectar cambios en velocidad de caminata o rango de ataque (1.21.11)
         if (event.getPacketType() == PacketType.Play.Server.UPDATE_ATTRIBUTES) {
             data.getAttributeTracker().handleSend(event);

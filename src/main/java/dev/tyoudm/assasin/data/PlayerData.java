@@ -70,6 +70,7 @@ public final class PlayerData {
     private final AtomicReference<Double> lastX = new AtomicReference<>(0.0);
     private final AtomicReference<Double> lastY = new AtomicReference<>(0.0);
     private final AtomicReference<Double> lastZ = new AtomicReference<>(0.0);
+    
 
     // ─── Rotation ─────────────────────────────────────────────────────────────
 
@@ -93,6 +94,8 @@ public final class PlayerData {
     private final AtomicInteger ping                     = new AtomicInteger(0);
     private final AtomicLong    lastTransactionTick      = new AtomicLong(0L);
     private final AtomicLong    lastTransactionConfirmTick = new AtomicLong(0L);
+    private final PositionTracker positionTracker = new PositionTracker();
+    private final RotationTracker rotationTracker = new RotationTracker();
 
     // ─── Packet counter ───────────────────────────────────────────────────────
 
