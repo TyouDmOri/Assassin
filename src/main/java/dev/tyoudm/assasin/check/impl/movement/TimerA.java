@@ -1,47 +1,30 @@
-package dev.tyoudm.assasin.check.impl.movement;
+package dev.tyoudm.assasin.check.impl.movement.timer;
 
-import dev.tyoudm.assasin.check.*;
+import dev.tyoudm.assasin.check.Check;
 import dev.tyoudm.assasin.data.PlayerData;
-import dev.tyoudm.assasin.exempt.ExemptType;
-import dev.tyoudm.assasin.mitigation.MitigationEngine;
 import org.bukkit.entity.Player;
 
-@CheckInfo(
-    name = "TimerA",
-    type = CheckType.TIMER_A,
-    category = CheckCategory.MOVEMENT,
-    description = "Balance-based packet timer detection.",
-    maxVl = 10.0,
-    severity = CheckInfo.Severity.HIGH,
-    mitigationProfile = "medium"
-)
-public final class TimerA extends Check {
-    private long lastTime = -1L;
-    private double balance = 0.0;
+public class TimerA extends Check {
+    public TimerA() { super("TimerA", "Game Speed / Timer"); }
 
-    public TimerA(final MitigationEngine engine) { super(engine); }
+    private int packetCount = 0;
+    private long lastReset = System.currentTimeMillis();
 
     @Override
-    protected void process(final Player player, final PlayerData data, final long tick) {
-        if (isExemptAny(data, tick, ExemptType.TELEPORT_PENDING, ExemptType.JOINED)) return;
-
+    public void process(Player player, PlayerData data, long tick) {
+        packetCount++;
         long now = System.currentTimeMillis();
-        if (lastTime == -1L) {
-            lastTime = now;
-            return;
+
+        // Revisar cada 1000ms (1 segundo)
+        if (now - lastReset >= 1000) {
+            // El límite teórico es 20. Permitimos 24 para lag, pero tú flagueaste con 25.
+            // Sube el límite a 26 o usa un buffer acumulativo.
+            if (packetCount > 26) { 
+                flag(player, data, 1.0, "packets=" + packetCount + " max=26", tick);
+            }
+            
+            packetCount = 0;
+            lastReset = now;
         }
-
-        long diff = now - lastTime;
-        balance += 50.0; // Añadimos 1 tick (50ms)
-        balance -= diff; // Restamos el tiempo real pasado
-
-        // Limitar balance positivo para evitar bypass después de lag masivo
-        if (balance > 100.0) balance = 100.0;
-
-        if (balance < -100.0) { // Si el jugador ha ganado más de 2 ticks de ventaja
-            flag(player, data, 1.0, "balance=" + balance, tick);
-            balance = 0; // Reset
-        }
-        lastTime = now;
     }
 }
