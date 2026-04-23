@@ -9,23 +9,12 @@ import org.bukkit.entity.Player;
 public class MitigationEngine {
 
     public void handleFlag(Player player, Check check, double vl, String info, long tick) {
-        // 1. Alerta por consola y chat (puedes añadir permiso para staff aquí)
-        String alert = "§8[§cAssassin§8] §f" + player.getName() + " §7flagged §e" + 
-                       check.getName() + " §8[§7" + info + "§8]";
-        
-        Bukkit.getConsoleSender().sendMessage(alert);
-        // Bukkit.broadcast(alert, "assasin.alerts"); 
-
-        // 2. Sistema de Setback (Teletransportar atrás si es movimiento)
-        if (check.getCategory().name().equals("MOVEMENT")) {
-            PlayerData data = Assassin.getInstance().getDataManager().getData(player);
-            
-            // Si el jugador ya ha fallado varias veces, lo forzamos a volver a su última posición legal
-            if (data.getCheckData().getSpeedBBuffer() > 4 || data.getCheckData().getMotionABuffer() > 4) {
-                Bukkit.getScheduler().runTask(Assassin.getInstance(), () -> {
-                    player.teleport(data.getMovementTracker().getLastValidLocation());
-                });
-            }
-        }
-    }
+    String message = "§8[§cASSASIN§8] §f" + player.getName() + " §7failed §e" + check.getName() + " §8(§6VL: " + String.format("%.1f", vl) + "§8) §7" + info;
+    
+    // Enviar a los admins que usaron /assasin alerts
+    AssassinCommand.getAlertSubscribers().forEach(uuid -> {
+        Player admin = Bukkit.getPlayer(uuid);
+        if (admin != null) admin.sendMessage(message);
+    });
+}
 }

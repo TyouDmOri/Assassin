@@ -12,20 +12,27 @@ public final class MotionA extends Check {
 
     @Override
     protected void process(Player player, PlayerData data, long tick) {
-        if (isExemptAny(data, tick, ExemptType.TELEPORT_PENDING, ExemptType.VELOCITY, ExemptType.WIND_CHARGE)) return;
+        // Exenciones de gravedad (Wind Charge, Elevadores, etc.)
+        if (isExemptAny(data, tick, ExemptType.VELOCITY, ExemptType.TELEPORT_PENDING)) return;
 
         double deltaY = data.getMovementTracker().getDeltaY();
         double lastDeltaY = data.getMovementTracker().getLastDeltaY();
+        
+        // Predicción física de Minecraft: Gravedad (0.08) y Rozamiento (0.98)
+        double prediction = (lastDeltaY - 0.08) * 0.98;
 
-        // Gravedad Vanilla: (LastY - 0.08) * 0.98
-        double predictedY = (lastDeltaY - 0.08) * 0.98;
-
-        if (!data.isOnGround() && !data.wasOnGround()) {
-            // Si la diferencia entre lo que hizo y lo que debería hacer es muy grande
-            if (Math.abs(deltaY - predictedY) > 0.02) {
+        // Si el jugador está en el aire y no baja como debería...
+        if (!data.isOnGround() && !data.getCollisionTracker().isInLiquid()) {
+            
+            // Margen de error para pequeñas variaciones
+            if (deltaY > prediction + 0.001 && deltaY > -0.5) {
                 double buffer = data.getCheckData().getMotionABuffer();
-                if (++buffer > 3) flag(player, data, 1.0, "diff=" + Math.abs(deltaY - predictedY), tick);
+                if (++buffer > 5) {
+                    flag(player, data, 1.0, "Y=" + deltaY + " Pred=" + prediction, tick);
+                }
                 data.getCheckData().setMotionABuffer(buffer);
+            } else {
+                data.getCheckData().setMotionABuffer(Math.max(0, data.getCheckData().getMotionABuffer() - 0.1));
             }
         }
     }

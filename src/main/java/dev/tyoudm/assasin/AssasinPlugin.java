@@ -52,10 +52,10 @@ public final class AssasinPlugin extends JavaPlugin {
         
         // 2. Iniciar PacketEvents API
         PacketEvents.getAPI().init();
-    
+        
         // 3. Registrar el Procesador de Paquetes
         PacketEvents.getAPI().getEventManager().registerListener(new PacketProcessor());
-    
+        
         // 4. Bootstrap the service container (Asegúrate de que tus Managers se inicien aquí)
         serviceContainer = new ServiceContainer(this);
         serviceContainer.enable();
@@ -75,6 +75,7 @@ public final class AssasinPlugin extends JavaPlugin {
             "§cASSASIN §fv%s §7enabled in §a%dms §7— by TyouDm",
             getDescription().getVersion(), elapsed
         ));
+        getCommand("assasin").setExecutor(new AssassinCommand());
     }
 
     @Override
