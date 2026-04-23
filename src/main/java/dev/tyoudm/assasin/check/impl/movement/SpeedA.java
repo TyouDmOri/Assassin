@@ -50,25 +50,37 @@ public final class SpeedA extends Check {
     public SpeedA(final MitigationEngine engine) { super(engine); }
 
     @Override
-    protected void process(final Player player, final PlayerData data, final long tick) {
-        // ── Exempts ──────────────────────────────────────────────────────────
-        if (isExemptAny(data, tick,
-                ExemptType.ELYTRA_ACTIVE, ExemptType.ELYTRA_BOOST,
-                ExemptType.RIPTIDE, ExemptType.VEHICLE,
-                ExemptType.LIQUID, ExemptType.TELEPORT_PENDING,
-                ExemptType.SETBACK, ExemptType.WTAP)) return;
+    protected void process(Player player, PlayerData data, long tick) {
+        // 1. EXENCIONES: Si el jugador acaba de recibir un golpe o teletransporte, ignoramos.
+        if (isExemptAny(data, tick, ExemptType.VELOCITY, ExemptType.TELEPORT_PENDING)) return;
 
-        final double speedH = data.getVelocityH();
-        if (speedH < 0.001) return; // not moving — early exit
-
-        final double maxSpeed = MovementPredictor.maxExpectedSpeedH(
-            data.isSprinting(), data.isSneaking(), data.getPing());
-
-        if (speedH > maxSpeed) {
-            final double excess = speedH - maxSpeed;
-            flag(player, data, excess * 2.0,
-                String.format("speedH=%.4f max=%.4f excess=%.4f", speedH, maxSpeed, excess),
-                tick);
+        double deltaH = data.getMovementTracker().getDeltaH();
+    
+        // 2. CÁLCULO DINÁMICO DEL MÁXIMO (Ajustado a la 1.21.11)
+        // La velocidad base es 0.1, pero con sprint sube un 30% aprox.
+        double baseSpeed = data.getAttributeTracker().getWalkSpeed(); 
+        double maxExpected = baseSpeed * (data.isSprinting() ? 1.302 : 1.0);
+    
+        // Si está en el aire, la física cambia (se le permite un poco más de inercia)
+        if (!data.isOnGround()) {
+        maxExpected += 0.02; 
         }
+
+        // 3. SISTEMA DE BUFFER (Para evitar flags por 0.01 de diferencia)
+        double excess = deltaH - maxExpected;
+        double buffer = data.getCheckData().getSpeedBBuffer();
+
+        if (excess > 0.005) { // Solo si el exceso es notable
+            buffer += excess * 10; // El buffer sube proporcionalmente al hack
+        
+            if (buffer > 1.5) { // Solo flagueamos si el buffer se llena (aprox 3-5 ticks de exceso)
+                flag(player, data, 1.0, "Speed=" + String.format("%.4f", deltaH) + " Max=" + String.format("%.4f", maxExpected), tick);
+                buffer /= 2; // Bajamos el buffer tras el flag para no spamear
+            }
+        } else {
+            buffer = Math.max(0, buffer - 0.05); // El buffer baja si camina normal
+        }
+
+        data.getCheckData().setSpeedBBuffer(buffer);
     }
 }
