@@ -1,86 +1,58 @@
-/*
- * ▄▀█ █▀ █▀ ▄▀█ █▀ █ █▄░█
- * █▀█ ▄█ ▄█ █▀█ ▄█ █ █░▀█
- *     ASSASIN AntiCheat v1.0.0
- *     Mitigation-First Server-Side AntiCheat
- *     Target: Paper 1.21.11 "Mounts of Mayhem"
- *     Author: TyouDm
- */
-
-package dev.tyoudm.assasin.check.impl.movement;
+package dev.tyoudm.assasin.check.impl.movement.strafe;
 
 import dev.tyoudm.assasin.check.Check;
-import dev.tyoudm.assasin.check.CheckCategory;
-import dev.tyoudm.assasin.check.CheckInfo;
-import dev.tyoudm.assasin.check.CheckType;
 import dev.tyoudm.assasin.data.PlayerData;
-import dev.tyoudm.assasin.exempt.ExemptType;
-import dev.tyoudm.assasin.mitigation.MitigationEngine;
-import dev.tyoudm.assasin.util.MathUtil;
 import org.bukkit.entity.Player;
 
-/**
- * StrafeA — Illegal strafe pattern detection.
- *
- * <p>Detects when the player's movement direction deviates significantly
- * from their yaw direction in a way that is physically impossible without
- * a strafe hack. Legitimate A/D-tap oscillation is tolerated via
- * {@link #ADTAP_TOLERANCE}.
- *
- * <h2>Algorithm</h2>
- * Computes the angle between the movement vector and the player's facing
- * direction. If the deviation exceeds the threshold for multiple consecutive
- * ticks, it flags.
- *
- * @author TyouDm
- * @version 1.0.0
- */
-@CheckInfo(
-    name             = "StrafeA",
-    type             = CheckType.STRAFE_A,
-    category         = CheckCategory.MOVEMENT,
-    description      = "Detects illegal strafe patterns.",
-    maxVl            = 8.0,
-    severity         = CheckInfo.Severity.MEDIUM,
-    mitigationProfile = "soft"
-)
-public final class StrafeA extends Check {
+public class StrafeA extends Check {
 
-    /** Maximum allowed deviation between movement direction and yaw (degrees). */
-    private static final double MAX_DEVIATION  = 90.0 + 15.0; // 90° strafe + 15° tolerance
-    /** A/D-tap tolerance — lateral oscillation is allowed up to this Δ. */
-    private static final double ADTAP_TOLERANCE = 0.15;
-    /** Minimum speed to run this check (avoid false positives at near-zero speed). */
-    private static final double MIN_SPEED       = 0.08;
-
-    public StrafeA(final MitigationEngine engine) { super(engine); }
+    public StrafeA() {
+        super("StrafeA", "Detección de OmniSprint / Movimiento Imposible");
+    }
 
     @Override
-    protected void process(final Player player, final PlayerData data, final long tick) {
-        if (isExemptAny(data, tick,
-                ExemptType.ELYTRA_ACTIVE, ExemptType.VEHICLE,
-                ExemptType.LIQUID, ExemptType.TELEPORT_PENDING,
-                ExemptType.SETBACK)) return;
+    public void process(Player player, PlayerData data, long tick) {
+        // 1. OBTENER DELTAS Y NORMALIZAR YAW
+        double dx = data.getMovementTracker().getDx();
+        double dz = data.getMovementTracker().getDz();
+        double deltaH = data.getMovementTracker().getCurrentSpeedH();
+        
+        // Normalizamos el Yaw para que esté entre -180 y 180
+        float yaw = data.getRotationTracker().getYaw() % 360;
+        if (yaw > 180) yaw -= 360;
+        if (yaw < -180) yaw += 360;
 
-        final double speedH = data.getVelocityH();
-        if (speedH < MIN_SPEED) return;
+        // 2. CALCULAR ÁNGULO DE MOVIMIENTO REAL
+        // Atan2 nos da el ángulo hacia donde se desplaza el jugador
+        double moveAngle = Math.toDegrees(Math.atan2(-dx, dz));
+        
+        // 3. CALCULAR DESVIACIÓN
+        double deviation = Math.abs(yaw - moveAngle) % 360;
+        if (deviation > 180) deviation = 360 - deviation;
 
-        final double dx = data.getX() - data.getLastX();
-        final double dz = data.getZ() - data.getLastZ();
-        if (Math.abs(dx) < 1e-6 && Math.abs(dz) < 1e-6) return;
+        // 4. LÓGICA DE DETECCIÓN (Solo si está esprintando y moviéndose rápido)
+        if (data.isSprinting() && deltaH > 0.2) {
+            
+            // En Minecraft vanilla, no puedes esprintar si tu ángulo es mayor a ~70° 
+            // (no puedes correr de lado o hacia atrás).
+            double limit = 75.0; 
 
-        // Movement direction angle
-        final double moveAngle = Math.toDegrees(Math.atan2(-dx, dz));
-        // Player facing angle (yaw → world direction)
-        final double yaw       = data.getYaw();
+            // Si el jugador está en el aire, permitimos más margen por el "air strafe"
+            if (!data.isOnGround()) limit += 15.0;
 
-        final double deviation = MathUtil.angleDiff(moveAngle, yaw);
-
-        if (deviation > MAX_DEVIATION) {
-            flag(player, data, 0.5,
-                String.format("deviation=%.1f° max=%.1f° yaw=%.1f moveAngle=%.1f",
-                    deviation, MAX_DEVIATION, yaw, moveAngle),
-                tick);
+            if (deviation > limit) {
+                double buffer = data.getCheckData().getStrafeBuffer();
+                
+                // Usamos un buffer porque un solo tick puede ser un giro rápido de ratón
+                if (++buffer > 3) {
+                    flag(player, data, 1.0, 
+                        String.format("deviation=%.1f° max=%.1f° deltaH=%.3f", deviation, limit, deltaH), tick);
+                    buffer = 0;
+                }
+                data.getCheckData().setStrafeBuffer(buffer);
+            } else {
+                data.getCheckData().setStrafeBuffer(Math.max(0, data.getCheckData().getStrafeBuffer() - 0.1));
+            }
         }
     }
 }
