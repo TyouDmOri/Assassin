@@ -1,5 +1,7 @@
 ﻿package dev.tyoudm.assasin.check;
+
 import java.lang.annotation.*;
+
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface CheckInfo {
@@ -9,5 +11,8 @@ public @interface CheckInfo {
     String description() default "";
     double maxVl() default 10.0;
     Severity severity() default Severity.MEDIUM;
-    enum Severity { LOW, MEDIUM, HIGH, CRITICAL }
+
+    enum Severity {
+        LOW, MEDIUM, HIGH, CRITICAL
+    }
 }
